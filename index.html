@@ -10,24 +10,26 @@
 
     <header>
         <h1>ジョリーロジャー ステータス推測・検証ツール</h1>
-        <p>レアリティ、覚醒回数、レベル、初期ステータスを入力して最終ステータスを推測します。</p>
+        <p>レアリティ、覚醒、レベルを入力し、推定ステータスを計算します。</p>
     </header>
 
     <main>
         <div class="input-section">
             <h2>カード情報入力</h2>
 
+            <h3>1. カード基本情報</h3>
+            
             <div class="input-group">
                 <label for="rarity">レアリティ (★1～★7):</label>
                 <select id="rarity" name="rarity" onchange="resetLevel()">
-                    <option value="10" data-max-awakening="18">N (★1 / LvMax 100)</option>
-                    <option value="20" data-max-awakening="18">HN (★2 / LvMax 110)</option>
-                    <option value="30" data-max-awakening="18" selected>R (★3 / LvMax 120)</option>
-                    <option value="40" data-max-awakening="18">HR (★4 / LvMax 130)</option>
-                    <option value="50" data-max-awakening="18">SR (★5 / LvMax 140)</option>
-                    <option value="60" data-max-awakening="18">UR (★6 / LvMax 150)</option>
-                    <option value="70" data-max-awakening="18">Legend (★7 / LvMax 160)</option>
-                    </select>
+                    <option value="10" data-max-awakening="18">N (★1 / Lv上限 10)</option>
+                    <option value="20" data-max-awakening="18">HN (★2 / Lv上限 20)</option>
+                    <option value="30" data-max-awakening="18" selected>R (★3 / Lv上限 30)</option>
+                    <option value="40" data-max-awakening="18">HR (★4 / Lv上限 40)</option>
+                    <option value="50" data-max-awakening="18">SR (★5 / Lv上限 50)</option>
+                    <option value="60" data-max-awakening="18">UR (★6 / Lv上限 60)</option>
+                    <option value="70" data-max-awakening="18">Legend (★7 / Lv上限 70)</option>
+                </select>
             </div>
 
             <div class="input-group">
@@ -42,72 +44,67 @@
 
             <hr>
 
-            <h3>アクセサリ選択 (Lv.1ボーナス)</h3>
+            <h3>2. アクセサリ選択 (Lv.1ボーナス計算用)</h3>
             
             <div class="input-group">
-                <label for="accessory_type">アクセサリの種類:</label>
+                <label for="accessory_type">アクセサリの種類と宝石:</label>
                 <select id="accessory_type" name="accessory_type" onchange="calculateStatus()">
-                    <option value="none" data-boost="none" selected>なし</option>
-                    <option value="necklace" data-boost="hp">ネックレス (体力)</option>
-                    <option value="ring" data-boost="spd">リング (速さ)</option>
-                    <option value="bracelet" data-boost="atk">ブレスレット (攻撃)</option>
-                    <option value="brooch" data-boost="hp_spd">ブローチ (体力・速さ)</option>
-                    <option value="belt" data-boost="hp_atk">ベルト (体力・攻撃)</option>
-                    <option value="earrings" data-boost="atk_spd">イヤリング (攻撃・速さ)</option>
-                </select>
-            </div>
-            
-            <div class="input-group">
-                <label for="gem_level">宝石の種類 (補正値):</label>
-                <select id="gem_level" name="gem_level" onchange="calculateStatus()">
-                    <option value="0" selected>なし (0)</option>
-                    <optgroup label="単一ステータス補正アクセサリ用 (10, 20, 30...)">
-                        <option value="10">パール (10)</option>
-                        <option value="20">ルビー (20)</option>
-                        <option value="30">サファイア (30)</option>
-                        <option value="40">エメラルド (40)</option>
-                        <option value="50">ダイヤモンド (50)</option>
+                    <optgroup label="補正なし">
+                        <option value="none" data-boost="none" data-gem-value="0" selected>なし</option>
                     </optgroup>
-                    <optgroup label="複合ステータス補正アクセサリ用 (5, 10, 15...)">
-                        <option value="5">パール (5)</option>
-                        <option value="10">ルビー (10)</option>
-                        <option value="15">サファイア (15)</option>
-                        <option value="20">エメラルド (20)</option>
-                        <option value="25">ダイヤモンド (25)</option>
+                    <optgroup label="単一ステータス補正 (10～50)">
+                        <option value="necklace_dia" data-boost="hp" data-gem-value="50">ダイヤのネックレス (HP +50)</option>
+                        <option value="bracelet_dia" data-boost="atk" data-gem-value="50">ダイヤのブレスレット (ATK +50)</option>
+                        <option value="ring_dia" data-boost="spd" data-gem-value="50">ダイヤのリング (SPD +50)</option>
                     </optgroup>
-                </select>
+                    <optgroup label="複合ステータス補正 (5～25)">
+                        <option value="brooch_dia" data-boost="hp_spd" data-gem-value="25">ダイヤのブローチ (HP/SPD +25)</option>
+                        <option value="belt_dia" data-boost="hp_atk" data-gem-value="25">ダイヤのベルト (HP/ATK +25)</option>
+                        <option value="earrings_dia" data-boost="atk_spd" data-gem-value="25">ダイヤのイヤリング (ATK/SPD +25)</option>
+                    </optgroup>
+                    </select>
             </div>
 
             <hr>
             
-            <h3>初期ステータス (覚醒0回時のLv.1ステータス)</h3>
+            <h3>3. 初期ステータス (覚醒0回時のLv.1)</h3>
 
             <div class="input-group">
                 <label for="base_hp">体力 (Base HP):</label>
-                <input type="number" id="base_hp" name="base_hp" value="1" min="1">
+                <input type="number" id="base_hp" name="base_hp" value="300" min="1" onchange="calculateStatus()">
             </div>
             <div class="input-group">
                 <label for="base_atk">攻撃 (Base ATK):</label>
-                <input type="number" id="base_atk" name="base_atk" value="1" min="1">
+                <input type="number" id="base_atk" name="base_atk" value="100" min="1" onchange="calculateStatus()">
             </div>
             <div class="input-group">
                 <label for="base_spd">速さ (Base SPD):</label>
-                <input type="number" id="base_spd" name="base_spd" value="1" min="1">
+                <input type="number" id="base_spd" name="base_spd" value="20" min="1" onchange="calculateStatus()">
             </div>
             
-            <button onclick="calculateStatus()">ステータス推測を実行</button>
         </div>
-
+        
         <div class="result-section">
             <h2>推測結果</h2>
             <p id="result-message">入力値を検証し、推測結果を表示します。</p>
-            <p id="level-info"></p>
 
             <hr>
-            <h3>最終ステータス (Lv. 1 時点)</h3>
+            
+            <h3>Lv.上限情報</h3>
+            <p id="level-info"></p>
+            <p id="max-level-info"></p>
+
+            <hr>
+
+            <h3>最終ステータス (<span id="current-level-display">Lv. 1</span> 時点)</h3>
             <p id="final-hp">体力 (HP): -</p>
             <p id="final-atk">攻撃 (ATK): -</p>
             <p id="final-spd">速さ (SPD): -</p>
+
+            <div class="debug-info-toggle" onclick="toggleDebugInfo()">
+                <small>詳細情報/デバッグ情報を表示 🔽</small>
+            </div>
+            <pre id="debug-output" style="display:none; text-align: left; background: #eee; padding: 10px; border-radius: 4px; overflow-x: auto;"></pre>
         </div>
     </main>
 
