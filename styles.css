@@ -56,7 +56,7 @@ h3 {
     margin-bottom: 0;
 }
 
-/* 成長型（単独行）の入力グループ */
+/* 成長型やアクセサリ選択（単独行）の入力グループ */
 .input-section > .input-group {
     margin-bottom: 15px; /* 下のHRとの間にスペースを確保 */
 }
@@ -81,56 +81,4 @@ label {
 /* input-row 内の項目（レアリティ、覚醒、Lv、初期ステータス）のスタイル */
 .input-row input[type="number"], 
 .input-row select {
-    width: 100%; 
-    padding: 8px; 
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 14px;
-}
-
-
-#level-info, #max-level-info {
-    font-size: 0.95em;
-    color: #555;
-    margin-bottom: 5px;
-}
-
-#result-message {
-    font-weight: bold;
-    color: #d9534f;
-    margin-top: 15px;
-    min-height: 20px; 
-}
-
-#final-hp, #final-atk, #final-spd {
-    font-size: 1.1em;
-    padding: 5px 0;
-    font-weight: bold;
-    color: #333; 
-}
-
-hr { 
-    border: 0;
-    border-top: 1px solid #eee;
-    margin: 25px 0;
-}
-
-optgroup {
-    font-weight: bold;
-    color: #0056b3;
-}
-
-.debug-info-toggle {
-    text-align: center;
-    cursor: pointer;
-    color: #0056b3;
-    margin-top: 20px;
-    padding: 5px;
-}
-
-#debug-output {
-    font-size: 0.8em;
-    white-space: pre-wrap; 
-    word-wrap: break-word;
-}
+    width: 100%;
