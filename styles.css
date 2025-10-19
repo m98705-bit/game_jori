@@ -1,0 +1,53 @@
+body {
+    font-family: sans-serif;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #f4f4f9;
+}
+
+h1 {
+    color: #007bff;
+    text-align: center;
+}
+
+.input-section, .output-section {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+label {
+    display: inline-block;
+    width: 150px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input[type="number"], select {
+    width: 150px;
+    padding: 8px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+.output-section p {
+    font-size: 1.2em;
+    font-weight: bold;
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ジョリーロジャー ステータス推測ツール</title>
+    <link rel="stylesheet" href="styles.css"> </head>
+<body>
+    <h1>ジョリーロジャー 海賊カード ステータス推測</h1>
+
+    <div class="input-section">
+        <h2>📊 初期値と目標設定</h2>
+        
+        <label for="initial_hp">初期体力 (Lv.1 HP):</label>
+        <input type="number" id="initial_hp" value="1000"><br>
+
+        <label for="initial_atk">初期攻撃力 (Lv.1 ATK):</label>
+        <input type="number" id="initial_atk" value="500"><br>
+
+        <label for="initial_spd">初期速さ (Lv.1 SPD):</label>
+        <input type="number" id="initial_spd" value="300"><br>
+
+        <label for="card_type">成長型:</label>
+        <select id="card_type">
+            <option value="HA型">HA型 (体力・攻撃↑)</option>
+            <option value="AS型">AS型 (攻撃・速さ↑)</option>
+            <option value="SS型">SS型 (速さ特化)</option>
+            <option value="ALL">ALL型 (平均)</option>
+        </select><br>
+
+        <label for="target_level">目標レベル:</label>
+        <input type="number" id="target_level" value="80" min="2"><br>
+
+        <label for="target_increase_hp">最大レベル時の体力総上昇値:</label>
+        <input type="number" id="target_increase_hp" value="10000"><br>
+        
+        </div>
+
+    <button onclick="calculateAndDisplay()">ステータスを計算</button>
+
+    <div class="output-section">
+        <h2>⭐ 推定結果 (Lv.<span id="display_level">--</span>)</h2>
+        <p>体力: <span id="result_hp">--</span></p>
+        <p>攻撃力: <span id="result_atk">--</span></p>
+        <p>速さ: <span id="result_spd">--</span></p>
+    </div>
+
+    <script src="script.js"></script> </body>
+</html>
