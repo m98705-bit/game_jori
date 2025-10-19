@@ -120,11 +120,35 @@ function calculateStatus(isSilent = false) {
         }
     }
 
-    // ----------------------------------------------------------------
-    // 6. ステータス推測計算の実行 (ここに実際の推測ロジックを実装)
+// ----------------------------------------------------------------
+    // 6. ステータス推測計算の実行 (ロジックの追加)
     // ----------------------------------------------------------------
     
-    // TODO: 実際のステータス推測ロジックを実装してください。
+    // ★★★ 推測ロジック（仮）★★★
+    // 成長値を「初期ステータス / 10」とし、レベルが上がるごとにリニアに成長すると仮定
+    const growthHp = baseHp / 10;
+    const growthAtk = baseAtk / 10;
+    const growthSpd = baseSpd / 10;
+    
+    // 現在のレベルが1の場合、成長分は0。Lv.Nの場合、(N-1)回成長する。
+    const levelDifference = level - 1;
+    
+    const finalHp = Math.round(baseHp + (growthHp * levelDifference));
+    const finalAtk = Math.round(baseAtk + (growthAtk * levelDifference));
+    const finalSpd = Math.round(baseSpd + (growthSpd * levelDifference));
+    
+    // ★★★ 結果をUIに反映 ★★★
+    document.getElementById('final-hp').textContent = `体力 (HP): ${finalHp}`;
+    document.getElementById('final-atk').textContent = `攻撃 (ATK): ${finalAtk}`;
+    document.getElementById('final-spd').textContent = `速さ (SPD): ${finalSpd}`;
+    
+    // 見出しのレベルを更新
+    document.querySelector('.result-section h3').textContent = `最終ステータス (Lv. ${level} 時点)`;
+
+    
+    // ----------------------------------------------------------------
+    // 7. コンソール出力 (デバッグ用)
+    // ----------------------------------------------------------------
     if (!isSilent) {
         const accessoryName = selectedAccessoryOption.textContent.split('(')[0].trim();
         const gemName = gemSelect.options[gemSelect.selectedIndex].textContent.split('(')[0].trim();
@@ -132,6 +156,7 @@ function calculateStatus(isSilent = false) {
         console.log(`[使用アクセサリ]: ${accessoryName} + ${gemName}`);
         console.log(`[補正後の初期ステータス]: HP=${baseHp}, ATK=${baseAtk}, SPD=${baseSpd}`);
         console.log(`(アクセサリ補正: HP+${accessoryHp}, ATK+${accessoryAtk}, SPD+${accessorySpd})`);
+        console.log(`[推測結果]: HP=${finalHp}, ATK=${finalAtk}, SPD=${finalSpd}`);
     }
 }
 
