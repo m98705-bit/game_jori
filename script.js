@@ -55,7 +55,7 @@ function calculateStatus(isSilent = false) {
     
     // 現在の入力値を取得
     let awakeningCount = parseInt(awakeningInput.value, 10) || 0;
-    let level = parseInt(levelInput.value, 10) || 1; 
+    let level = parseInt(levelInput.value, 10) || 1; // 現Lvは検証用として残す
     let baseHp = parseInt(baseHpInput.value, 10) || 1; 
     let baseAtk = parseInt(baseAtkInput.value, 10) || 1; 
     let baseSpd = parseInt(baseSpdInput.value, 10) || 1; 
@@ -68,7 +68,7 @@ function calculateStatus(isSilent = false) {
 
 
     // ----------------------------------------------------------------
-    // 2. ★★★ マイナス入力検証と補正 (エラー処理の強化) ★★★
+    // 2. マイナス入力検証と補正 (エラー処理の強化)
     // ----------------------------------------------------------------
     let correctionMessage = '';
     let corrected = false;
@@ -152,7 +152,7 @@ function calculateStatus(isSilent = false) {
     const currentLv1Spd = baseSpd + totalBonusSpd + accessorySpd;
     
     // ----------------------------------------------------------------
-    // 5. 覚醒回数、レベルの検証・補正 (最大値チェック)
+    // 5. 覚醒回数、レベルの検証・補正 (最大値チェック)とステータス計算
     // ----------------------------------------------------------------
     
     // 覚醒回数の検証 (最大値チェック)
@@ -169,21 +169,17 @@ function calculateStatus(isSilent = false) {
     const bonusMaxLevel = awakeningCount * 5; 
     const finalMaxLevel = baseMaxLevel + bonusMaxLevel; 
 
-    let levelMessage = `Lv. ${level} のステータスを推測しています。`;
+    // 現Lvの最大値チェック (表示上はMaxLvを超える入力もMaxLvに補正)
     let isLevelCorrected = false;
-
-    // レベルの検証 (最大値チェック)
     if (level > finalMaxLevel) {
         level = finalMaxLevel; 
         levelInput.value = finalMaxLevel;
         isLevelCorrected = true;
     }
     
-    // ----------------------------------------------------------------
-    // 6. ステータス推測計算の実行 (成長型による加算)
-    // ----------------------------------------------------------------
-    
-    const levelDifference = level - 1; // Lv.1からのレベル上昇回数
+    // ★★★ 修正箇所: 計算に使用するレベルを最大レベルに固定 ★★★
+    const levelUsedForCalculation = finalMaxLevel;
+    const levelDifference = levelUsedForCalculation - 1; // Lv.1からのレベル上昇回数
     
     // 成長型による加算計算
     const totalGrowthHp = growthHpPerLevel * levelDifference;
@@ -195,12 +191,21 @@ function calculateStatus(isSilent = false) {
     const finalSpd = currentLv1Spd + totalGrowthSpd;
     
     // ----------------------------------------------------------------
-    // 7. 結果の表示 (UI更新)
+    // 6. 結果の表示 (UI更新)
     // ----------------------------------------------------------------
     
-    document.getElementById('current-level-display').textContent = `Lv. ${level}`;
+    // ★★★ 修正箇所: 表示されるレベルを最終Maxレベルに変更 ★★★
+    document.getElementById('current-level-display').textContent = `Lv. ${finalMaxLevel}`;
 
     // レベル情報表示
+    let levelMessage = `Lv. ${levelInput.value} のステータスを検証しました。`;
+    if (levelInput.value > finalMaxLevel || levelInput.value < 1) {
+        // 現Lvの入力値が不正な場合、エラーメッセージを表示
+        levelMessage = `入力された現Lv. ${levelInput.value} は不正ですが、計算は最大Lv. ${finalMaxLevel} で行っています。`;
+    } else {
+        levelMessage = `入力された現Lv. ${levelInput.value} のステータスは、最大Lv. ${finalMaxLevel} で計算しています。`;
+    }
+    
     document.getElementById('level-info').textContent = levelMessage;
     document.getElementById('max-level-info').textContent = 
         `現在の最大レベル: ${finalMaxLevel} (初期Lv.${baseMaxLevel} + 覚醒ボーナス ${bonusMaxLevel} )`;
@@ -208,8 +213,10 @@ function calculateStatus(isSilent = false) {
     if (!isSilent) {
         if (isLevelCorrected) {
              document.getElementById('result-message').textContent = '⚠️ 入力レベルが上限を超えていたため、最大レベルに補正しました。';
+        } else if (corrected) {
+             // マイナス補正が行われた場合は、すでにメッセージが出ているため何もしない
         } else {
-             document.getElementById('result-message').textContent = '覚醒ボーナス、アクセサリ、成長型を適用し、ステータスを推測しました。';
+             document.getElementById('result-message').textContent = '覚醒ボーナス、アクセサリ、成長型を適用し、最大レベルでのステータスを推測しました。';
         }
     }
     
@@ -220,16 +227,17 @@ function calculateStatus(isSilent = false) {
     
     
     // ----------------------------------------------------------------
-    // 8. デバッグ情報のUI出力
+    // 7. デバッグ情報のUI出力
     // ----------------------------------------------------------------
     const debugOutput = 
 `[カード情報]
   レアリティ初期Lv: ${baseMaxLevel}
   覚醒回数: ${awakeningCount} / 上限: ${maxAwakening}
-  最終Lv上限: ${finalMaxLevel}
+  最終Lv上限: ${finalMaxLevel} (計算使用レベル)
 
 [成長型 (LvUP毎)]
   ${selectedGrowthOption.textContent}
+  LvUP回数: ${levelDifference} 回
   HP増加: ${growthHpPerLevel} × ${levelDifference} = +${totalGrowthHp}
   ATK増加: ${growthAtkPerLevel} × ${levelDifference} = +${totalGrowthAtk}
   SPD増加: ${growthSpdPerLevel} × ${levelDifference} = +${totalGrowthSpd}
