@@ -29,10 +29,13 @@ main {
     text-align: left;
 }
 
-h2 {
+h2, h3 { /* h3もスタイリングに追加 */
     color: #0056b3;
     border-bottom: 2px solid #ccc;
     padding-bottom: 10px;
+    margin-top: 20px;
+}
+h2 {
     margin-top: 0;
 }
 
@@ -75,4 +78,10 @@ button:hover {
     font-weight: bold;
     color: #d9534f;
     margin-top: 15px;
+}
+
+hr { /* 区切り線 */
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 25px 0;
 }

@@ -8,14 +8,14 @@ function resetLevel() {
     if (levelInput) {
         levelInput.value = 1;
         
-        // ユーザーに視覚的にレベル上限情報を更新させるために計算を軽く実行（任意）
+        // ユーザーに視覚的にレベル上限情報を更新させるために計算を軽く実行
         calculateStatus(true); 
     }
 }
 
 
 /**
- * メインのステータス推測を実行する関数
+ * メインのステータス推測と入力値の検証を実行する関数
  */
 function calculateStatus(isSilent = false) {
     // ----------------------------------------------------------------
@@ -37,8 +37,13 @@ function calculateStatus(isSilent = false) {
     // レベルを数値に変換
     let level = parseInt(levelInput, 10) || 1; 
 
+    // ★ 初期ステータスの取得（手入力値）
+    const baseAtk = parseInt(document.getElementById('base_atk').value, 10) || 0;
+    const baseDef = parseInt(document.getElementById('base_def').value, 10) || 0;
+    const baseMag = parseInt(document.getElementById('base_mag').value, 10) || 0;
+
     // ----------------------------------------------------------------
-    // 2. 覚醒回数の検証と補正 (N～Legend: レア度+17回が上限)
+    // 2. 覚醒回数の検証と補正 (上限: レア度+17回)
     // ----------------------------------------------------------------
     if (awakeningCount > maxAwakening) {
         awakeningCount = maxAwakening; // 上限値に補正
@@ -94,12 +99,9 @@ function calculateStatus(isSilent = false) {
     // 5. ステータス推測計算の実行 (ここに実際の推測ロジックを実装)
     // ----------------------------------------------------------------
     
-    // 例: 補正後の level と awakeningCount を使用して推測計算を実行
-    // const finalStatus = performPrediction(level, awakeningCount, ...他の入力値);
-    // document.getElementById('actual-status-result').textContent = finalStatus;
-
-    // ※ 注意: 現在のコードでは実際のステータス推測ロジックは含まれていません。
-    //   計算に必要なデータ（Lv1ステータス、成長率など）が揃ったら、ここに実装してください。
+    // TODO: 実際のステータス推測ロジックを実装してください。
+    //       使用する変数: level, awakeningCount, baseAtk, baseDef, baseMag
+    console.log(`取得した初期ステータス: ATK=${baseAtk}, DEF=${baseDef}, MAG=${baseMag}`);
 }
 
 // ページロード時にも一度レベル情報を表示 (初期値の確認用)

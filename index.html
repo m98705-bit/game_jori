@@ -9,8 +9,8 @@
 <body>
 
     <header>
-        <h1>ステータス推測・検証ツール</h1>
-        <p>レアリティと覚醒回数に応じて、レベル上限とレベルリセットを適用します。</p>
+        <h1>ジョリーロジャー ステータス推測・検証ツール</h1>
+        <p>レアリティ、覚醒回数、レベル、初期ステータスを入力して最終ステータスを推測します。</p>
     </header>
 
     <main>
@@ -18,7 +18,7 @@
             <h2>カード情報入力</h2>
 
             <div class="input-group">
-                <label for="rarity">レアリティ:</label>
+                <label for="rarity">レアリティ (★1～★7):</label>
                 <select id="rarity" name="rarity" onchange="resetLevel()">
                     <option value="140" data-awakening-limit="18">N (★1 / Lv上限 140)</option>
                     <option value="145" data-awakening-limit="19">HN (★2 / Lv上限 145)</option>
@@ -31,15 +31,32 @@
             </div>
 
             <div class="input-group">
-                <label for="awakening">覚醒回数:</label>
+                <label for="awakening">覚醒回数 (0～上限):</label>
                 <input type="number" id="awakening" name="awakening" value="0" min="0" onchange="resetLevel()">
             </div>
 
             <div class="input-group">
-                <label for="level">現在のレベル:</label>
+                <label for="level">現在のレベル (1～上限):</label>
                 <input type="number" id="level" name="level" value="1" min="1">
             </div>
 
+            <hr>
+            
+            <h3>初期ステータス (Lv.1 時点)</h3>
+
+            <div class="input-group">
+                <label for="base_atk">攻撃力 (Base ATK):</label>
+                <input type="number" id="base_atk" name="base_atk" value="100" min="1">
+            </div>
+            <div class="input-group">
+                <label for="base_def">防御力 (Base DEF):</label>
+                <input type="number" id="base_def" name="base_def" value="50" min="1">
+            </div>
+            <div class="input-group">
+                <label for="base_mag">魔力 (Base MAG):</label>
+                <input type="number" id="base_mag" name="base_mag" value="120" min="1">
+            </div>
+            
             <button onclick="calculateStatus()">ステータス推測を実行</button>
         </div>
 
@@ -47,7 +64,7 @@
             <h2>推測結果</h2>
             <p id="result-message">入力値を検証し、推測結果を表示します。</p>
             <p id="level-info"></p>
-            </div>
+        </div>
     </main>
 
     <script src="script.js"></script>
