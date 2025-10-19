@@ -31,19 +31,33 @@ function calculateStatus(isSilent = false) {
     const baseMaxLevel = parseInt(raritySelect.value, 10);
     const maxAwakening = parseInt(selectedOption.getAttribute('data-awakening-limit'), 10); 
     
-    // 覚醒回数を数値に変換
+    // 覚醒回数とレベルを数値に変換
     let awakeningCount = parseInt(awakeningInput, 10) || 0;
-
-    // レベルを数値に変換
     let level = parseInt(levelInput, 10) || 1; 
 
-    // ★ 初期ステータスの取得（手入力値）
-    const baseAtk = parseInt(document.getElementById('base_atk').value, 10) || 0;
-    const baseDef = parseInt(document.getElementById('base_def').value, 10) || 0;
-    const baseMag = parseInt(document.getElementById('base_mag').value, 10) || 0;
+    // アクセサリの選択値を取得
+    const accessorySelect = document.getElementById('accessory');
+    const selectedAccessoryOption = accessorySelect.options[accessorySelect.selectedIndex];
+
+    // data属性から3つの補正値を取得
+    const accessoryAtk = parseInt(selectedAccessoryOption.getAttribute('data-atk'), 10) || 0;
+    const accessoryDef = parseInt(selectedAccessoryOption.getAttribute('data-def'), 10) || 0;
+    const accessoryMag = parseInt(selectedAccessoryOption.getAttribute('data-mag'), 10) || 0;
+
+    // 初期ステータスの取得（手入力値）
+    let baseAtk = parseInt(document.getElementById('base_atk').value, 10) || 0;
+    let baseDef = parseInt(document.getElementById('base_def').value, 10) || 0;
+    let baseMag = parseInt(document.getElementById('base_mag').value, 10) || 0;
+    
+    // ----------------------------------------------------------------
+    // 2. アクセサリによる初期ステータスへの補正を加算
+    // ----------------------------------------------------------------
+    baseAtk += accessoryAtk;
+    baseDef += accessoryDef;
+    baseMag += accessoryMag;
 
     // ----------------------------------------------------------------
-    // 2. 覚醒回数の検証と補正 (上限: レア度+17回)
+    // 3. 覚醒回数の検証と補正 (上限: レア度+17回)
     // ----------------------------------------------------------------
     if (awakeningCount > maxAwakening) {
         awakeningCount = maxAwakening; // 上限値に補正
@@ -58,7 +72,7 @@ function calculateStatus(isSilent = false) {
     }
 
     // ----------------------------------------------------------------
-    // 3. 最終レベル上限の計算とレベルの検証
+    // 4. 最終レベル上限の計算とレベルの検証
     // ----------------------------------------------------------------
     // 覚醒1回あたり、レベル上限が 5 上昇
     const bonusMaxLevel = awakeningCount * 5; 
@@ -83,7 +97,7 @@ function calculateStatus(isSilent = false) {
     }
     
     // ----------------------------------------------------------------
-    // 4. 結果の表示
+    // 5. 結果の表示
     // ----------------------------------------------------------------
     document.getElementById('level-info').textContent = levelMessage;
     
@@ -96,12 +110,15 @@ function calculateStatus(isSilent = false) {
     }
 
     // ----------------------------------------------------------------
-    // 5. ステータス推測計算の実行 (ここに実際の推測ロジックを実装)
+    // 6. ステータス推測計算の実行 (ここに実際の推測ロジックを実装)
     // ----------------------------------------------------------------
     
     // TODO: 実際のステータス推測ロジックを実装してください。
     //       使用する変数: level, awakeningCount, baseAtk, baseDef, baseMag
-    console.log(`取得した初期ステータス: ATK=${baseAtk}, DEF=${baseDef}, MAG=${baseMag}`);
+    if (!isSilent) {
+        console.log(`[補正後の初期ステータス]: ATK=${baseAtk}, DEF=${baseDef}, MAG=${baseMag}`);
+        console.log(`(アクセサリ補正: ATK+${accessoryAtk}, DEF+${accessoryDef}, MAG+${accessoryMag})`);
+    }
 }
 
 // ページロード時にも一度レベル情報を表示 (初期値の確認用)

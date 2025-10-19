@@ -41,6 +41,20 @@
             </div>
 
             <hr>
+
+            <h3>アクセサリ選択</h3>
+            <div class="input-group">
+                <label for="accessory">装着アクセサリ (Lv1ボーナス影響):</label>
+                <select id="accessory" name="accessory" onchange="calculateStatus()">
+                    <option value="none" data-atk="0" data-def="0" data-mag="0" selected>なし</option>
+                    <option value="diamond_necklace" data-atk="3" data-def="0" data-mag="0">ダイヤのネックレス (+3 ATK)</option>
+                    <option value="bracelet" data-atk="0" data-def="3" data-mag="0">ブレスレット (+3 DEF)</option>
+                    <option value="ring" data-atk="0" data-def="0" data-mag="3">リング (+3 MAG)</option>
+                    <option value="diamond_brooch" data-atk="1" data-def="1" data-mag="1">ダイアのブローチ (+1 ALL)</option>
+                </select>
+            </div>
+
+            <hr>
             
             <h3>初期ステータス (Lv.1 時点)</h3>
 
