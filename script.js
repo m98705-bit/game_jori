@@ -177,7 +177,7 @@ function calculateStatus(isSilent = false) {
         isLevelCorrected = true;
     }
     
-    // ★★★ 修正箇所: 計算に使用するレベルを最大レベルに固定 ★★★
+    // 計算に使用するレベルを最大レベルに固定
     const levelUsedForCalculation = finalMaxLevel;
     const levelDifference = levelUsedForCalculation - 1; // Lv.1からのレベル上昇回数
     
@@ -194,8 +194,9 @@ function calculateStatus(isSilent = false) {
     // 6. 結果の表示 (UI更新)
     // ----------------------------------------------------------------
     
-    // ★★★ 修正箇所: 表示されるレベルを最終Maxレベルに変更 ★★★
-    document.getElementById('current-level-display').textContent = `Lv. ${finalMaxLevel}`;
+    // ★★★ 修正箇所: 最終ステータスの見出しを更新 ★★★
+    document.getElementById('final-level-display').textContent = `Lv. ${finalMaxLevel}`;
+    document.getElementById('final-awakening-display').textContent = `覚醒${awakeningCount}回`;
 
     // レベル情報表示
     let levelMessage = `Lv. ${levelInput.value} のステータスを検証しました。`;
