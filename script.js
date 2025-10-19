@@ -1,79 +1,108 @@
-// 成長型ごとの補正係数（前の回答の仮定値）
-const GROWTH_BONUS = {
-    "HA型": {"HP": 1.2, "ATK": 1.1, "SPD": 0.8},
-    "AS型": {"HP": 0.9, "ATK": 1.1, "SPD": 1.2},
-    "SS型": {"HP": 0.8, "ATK": 0.9, "SPD": 1.3},
-    "ALL": {"HP": 1.0, "ATK": 1.0, "SPD": 1.0}
-};
-
-// ----------------------------------------------------
-// UIから値を取得し、計算を実行して表示するメイン関数
-// ----------------------------------------------------
-function calculateAndDisplay() {
-    // 1. UIから入力値を取得
-    const initialHP = parseInt(document.getElementById('initial_hp').value);
-    const initialATK = parseInt(document.getElementById('initial_atk').value);
-    const initialSPD = parseInt(document.getElementById('initial_spd').value);
+/**
+ * 覚醒回数やレアリティが変更されたときにレベルを1にリセットする関数
+ */
+function resetLevel() {
+    const levelInput = document.getElementById('level');
     
-    const maxLevel = 100; // 例として最大レベルを100に固定
-    const targetLevel = parseInt(document.getElementById('target_level').value);
-    const cardType = document.getElementById('card_type').value;
-
-    const targetIncreaseHP = parseInt(document.getElementById('target_increase_hp').value);
-    // ... 攻撃力と速さの目標上昇値もUIから取得する必要があります ...
-
-    // 簡略化のため、ここでは目標上昇値を固定値として仮定します
-    const targetIncrease = {
-        "HP": targetIncreaseHP,
-        "ATK": targetIncreaseHP * 0.8, // 例: 攻撃力は体力目標の80%
-        "SPD": targetIncreaseHP * 0.6  // 例: 速さは体力目標の60%
-    };
-
-    // 2. ステータス計算 (前の回答のロジックをベースに)
-    const resultStats = calculateStats(
-        { "HP": initialHP, "ATK": initialATK, "SPD": initialSPD },
-        maxLevel, 
-        targetIncrease, 
-        cardType, 
-        targetLevel
-    );
-
-    // 3. UIに結果を表示
-    document.getElementById('display_level').textContent = targetLevel;
-    document.getElementById('result_hp').textContent = resultStats.HP.toLocaleString();
-    document.getElementById('result_atk').textContent = resultStats.ATK.toLocaleString();
-    document.getElementById('result_spd').textContent = resultStats.SPD.toLocaleString();
+    // 覚醒するとレベルが1に戻るルールを適用
+    if (levelInput) {
+        levelInput.value = 1;
+        
+        // ユーザーに視覚的にレベル上限情報を更新させるために計算を軽く実行（任意）
+        calculateStatus(true); 
+    }
 }
 
-// ----------------------------------------------------
-// 💡 ステータス計算ロジック (前の回答の疑似コード)
-// ----------------------------------------------------
-function calculateStats(base_stats, max_level, target_increase, card_type, target_level) {
-    let current_stats = base_stats;
-    const levels_to_grow = max_level - 1;
-    const bonus = GROWTH_BONUS[card_type] || {"HP": 1.0, "ATK": 1.0, "SPD": 1.0};
+
+/**
+ * メインのステータス推測を実行する関数
+ */
+function calculateStatus(isSilent = false) {
+    // ----------------------------------------------------------------
+    // 1. 入力値の取得
+    // ----------------------------------------------------------------
+    const levelInput = document.getElementById('level').value;
+    const awakeningInput = document.getElementById('awakening').value; 
+    const raritySelect = document.getElementById('rarity');
     
-    if (target_level <= 1) return base_stats;
-    if (target_level > max_level) target_level = max_level;
+    const selectedOption = raritySelect.options[raritySelect.selectedIndex];
 
-    let final_stats = {};
+    // レアリティごとの基本レベル上限と覚醒上限回数を取得
+    const baseMaxLevel = parseInt(raritySelect.value, 10);
+    const maxAwakening = parseInt(selectedOption.getAttribute('data-awakening-limit'), 10); 
+    
+    // 覚醒回数を数値に変換
+    let awakeningCount = parseInt(awakeningInput, 10) || 0;
 
-    for (const stat_key of ["HP", "ATK", "SPD"]) {
-        // 1. 基礎的な1レベルあたりの平均成長値
-        const base_growth_per_level = target_increase[stat_key] / levels_to_grow;
-        
-        # 2. 成長型ボーナスを適用
-        const adjusted_growth_per_level = base_growth_per_level * bonus[stat_key];
-        
-        # 3. 指定レベルまでの総上昇量を計算
-        const total_increase = adjusted_growth_per_level * (target_level - 1);
-        
-        # 4. 最終ステータス = 初期ステータス + 総上昇量
-        let final_value = base_stats[stat_key] + total_increase;
-        
-        # 最終値を整数に丸める
-        final_stats[stat_key] = Math.round(final_value);
+    // レベルを数値に変換
+    let level = parseInt(levelInput, 10) || 1; 
+
+    // ----------------------------------------------------------------
+    // 2. 覚醒回数の検証と補正 (N～Legend: レア度+17回が上限)
+    // ----------------------------------------------------------------
+    if (awakeningCount > maxAwakening) {
+        awakeningCount = maxAwakening; // 上限値に補正
+        document.getElementById('awakening').value = maxAwakening; 
+        if (!isSilent) {
+             document.getElementById('result-message').textContent = `注意: 覚醒回数が上限（${maxAwakening}回）を超えたため、${maxAwakening}回に補正しました。`;
+        }
+    }
+    if (awakeningCount < 0) {
+        awakeningCount = 0;
+        document.getElementById('awakening').value = 0;
+    }
+
+    // ----------------------------------------------------------------
+    // 3. 最終レベル上限の計算とレベルの検証
+    // ----------------------------------------------------------------
+    // 覚醒1回あたり、レベル上限が 5 上昇
+    const bonusMaxLevel = awakeningCount * 5; 
+    const finalMaxLevel = baseMaxLevel + bonusMaxLevel; 
+
+    let levelMessage = `現在のレベル上限: ${finalMaxLevel}`;
+    let isLevelCorrected = false;
+
+    // レベルの下限 (1) をチェック
+    if (level < 1) {
+        level = 1;
+        document.getElementById('level').value = 1;
+        isLevelCorrected = true;
+    }
+
+    // レベルの上限をチェック
+    if (level > finalMaxLevel) {
+        level = finalMaxLevel; // 上限値に補正
+        document.getElementById('level').value = finalMaxLevel;
+        isLevelCorrected = true;
+        levelMessage += ` (⚠️ レベルが上限を超えていたため、${finalMaxLevel}に補正)`;
     }
     
-    return final_stats;
+    // ----------------------------------------------------------------
+    // 4. 結果の表示
+    // ----------------------------------------------------------------
+    document.getElementById('level-info').textContent = levelMessage;
+    
+    if (!isSilent) {
+        if (isLevelCorrected) {
+             document.getElementById('result-message').textContent = '入力レベルを自動的に補正しました。';
+        } else {
+             document.getElementById('result-message').textContent = '入力値の検証を完了しました。ここにステータス推測の計算結果を表示します。';
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // 5. ステータス推測計算の実行 (ここに実際の推測ロジックを実装)
+    // ----------------------------------------------------------------
+    
+    // 例: 補正後の level と awakeningCount を使用して推測計算を実行
+    // const finalStatus = performPrediction(level, awakeningCount, ...他の入力値);
+    // document.getElementById('actual-status-result').textContent = finalStatus;
+
+    // ※ 注意: 現在のコードでは実際のステータス推測ロジックは含まれていません。
+    //   計算に必要なデータ（Lv1ステータス、成長率など）が揃ったら、ここに実装してください。
 }
+
+// ページロード時にも一度レベル情報を表示 (初期値の確認用)
+document.addEventListener('DOMContentLoaded', () => {
+    calculateStatus(true); // 初期表示はメッセージなし (isSilent=true) で実行
+});
