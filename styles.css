@@ -42,26 +42,42 @@ h3 {
     margin-bottom: 15px;
 }
 
-.input-group {
-    margin-bottom: 15px;
+/* ★★★ 修正箇所 4: 新しい input-row スタイル ★★★ */
+.input-row {
+    display: flex;
+    justify-content: space-between; /* 要素間に均等なスペースを空ける */
+    gap: 10px; /* 要素間の最小間隔 */
+    margin-bottom: 20px;
+}
+
+.input-row .input-group {
+    flex-grow: 1; /* スペースを均等に使う */
+    min-width: 0; /* フレックスアイテムの最小幅をリセット */
+    margin-bottom: 0;
 }
 
 label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    font-size: 0.9em; /* ラベルを少し小さく */
 }
 
 input[type="number"], select {
-    width: calc(100% - 22px);
-    padding: 10px;
+    width: 100%; /* input-groupの幅に合わせて100%に */
+    padding: 8px; /* パディングを少し減らす */
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 14px; /* フォントサイズを小さく */
 }
 
-/* 実行ボタンは削除し、onchangeで自動実行に */
+/* 単独の input-group の input/select の幅調整 */
+.input-section > .input-group input[type="number"], 
+.input-section > .input-group select {
+    width: calc(100% - 22px); 
+    /* input-row 外のアクセサリ選択欄は以前の幅に戻す */
+}
 
 #level-info, #max-level-info {
     font-size: 0.95em;
@@ -73,7 +89,7 @@ input[type="number"], select {
     font-weight: bold;
     color: #d9534f;
     margin-top: 15px;
-    min-height: 20px; /* メッセージがない時も高さを保持 */
+    min-height: 20px; 
 }
 
 #final-hp, #final-atk, #final-spd {
@@ -94,7 +110,6 @@ optgroup {
     color: #0056b3;
 }
 
-/* デバッグ情報トグル */
 .debug-info-toggle {
     text-align: center;
     cursor: pointer;
@@ -105,6 +120,6 @@ optgroup {
 
 #debug-output {
     font-size: 0.8em;
-    white-space: pre-wrap; /* 改行を有効にし、自動改行を許可 */
+    white-space: pre-wrap; 
     word-wrap: break-word;
 }

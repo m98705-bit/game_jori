@@ -18,34 +18,33 @@
             <h2>カード情報入力</h2>
 
             <h3>1. カード基本情報</h3>
-            
-            <div class="input-group">
-                <label for="rarity">レアリティ (★1～★7):</label>
-                <select id="rarity" name="rarity" onchange="resetLevel()">
-                    <option value="10" data-max-awakening="18">N (★1 / Lv上限 10)</option>
-                    <option value="20" data-max-awakening="18">HN (★2 / Lv上限 20)</option>
-                    <option value="30" data-max-awakening="18" selected>R (★3 / Lv上限 30)</option>
-                    <option value="40" data-max-awakening="18">HR (★4 / Lv上限 40)</option>
-                    <option value="50" data-max-awakening="18">SR (★5 / Lv上限 50)</option>
-                    <option value="60" data-max-awakening="18">UR (★6 / Lv上限 60)</option>
-                    <option value="70" data-max-awakening="18">Legend (★7 / Lv上限 70)</option>
-                </select>
-            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="rarity">レアリティ:</label>
+                    <select id="rarity" name="rarity" onchange="resetLevel()">
+                        <option value="10" data-max-awakening="18">N (★1)</option>
+                        <option value="20" data-max-awakening="18">HN (★2)</option>
+                        <option value="30" data-max-awakening="18" selected>R (★3)</option>
+                        <option value="40" data-max-awakening="18">HR (★4)</option>
+                        <option value="50" data-max-awakening="18">SR (★5)</option>
+                        <option value="60" data-max-awakening="18">UR (★6)</option>
+                        <option value="70" data-max-awakening="18">Legend (★7)</option>
+                    </select>
+                </div>
 
-            <div class="input-group">
-                <label for="awakening">覚醒回数 (0～上限):</label>
-                <input type="number" id="awakening" name="awakening" value="0" min="0" onchange="resetLevel()">
-            </div>
+                <div class="input-group">
+                    <label for="awakening">覚醒回数:</label>
+                    <input type="number" id="awakening" name="awakening" value="0" min="0" onchange="resetLevel()">
+                </div>
 
-            <div class="input-group">
-                <label for="level">現在のレベル (1～上限):</label>
-                <input type="number" id="level" name="level" value="1" min="1">
+                <div class="input-group">
+                    <label for="level">現Lv:</label>
+                    <input type="number" id="level" name="level" value="1" min="1">
+                </div>
             </div>
-
             <hr>
 
             <h3>2. アクセサリ選択 (Lv.1ボーナス計算用)</h3>
-            
             <div class="input-group">
                 <label for="accessory_type">アクセサリの種類と宝石:</label>
                 <select id="accessory_type" name="accessory_type" onchange="calculateStatus()">
@@ -62,24 +61,25 @@
                         <option value="belt_dia" data-boost="hp_atk" data-gem-value="25">ダイヤのベルト (HP/ATK +25)</option>
                         <option value="earrings_dia" data-boost="atk_spd" data-gem-value="25">ダイヤのイヤリング (ATK/SPD +25)</option>
                     </optgroup>
-                    </select>
+                </select>
             </div>
 
             <hr>
             
             <h3>3. 初期ステータス (覚醒0回時のLv.1)</h3>
-
-            <div class="input-group">
-                <label for="base_hp">体力 (Base HP):</label>
-                <input type="number" id="base_hp" name="base_hp" value="300" min="1" onchange="calculateStatus()">
-            </div>
-            <div class="input-group">
-                <label for="base_atk">攻撃 (Base ATK):</label>
-                <input type="number" id="base_atk" name="base_atk" value="100" min="1" onchange="calculateStatus()">
-            </div>
-            <div class="input-group">
-                <label for="base_spd">速さ (Base SPD):</label>
-                <input type="number" id="base_spd" name="base_spd" value="20" min="1" onchange="calculateStatus()">
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="base_hp">HP:</label>
+                    <input type="number" id="base_hp" name="base_hp" value="300" min="1" onchange="calculateStatus()">
+                </div>
+                <div class="input-group">
+                    <label for="base_atk">ATK:</label>
+                    <input type="number" id="base_atk" name="base_atk" value="100" min="1" onchange="calculateStatus()">
+                </div>
+                <div class="input-group">
+                    <label for="base_spd">SPD:</label>
+                    <input type="number" id="base_spd" name="base_spd" value="20" min="1" onchange="calculateStatus()">
+                </div>
             </div>
             
         </div>
