@@ -21,7 +21,7 @@
                 <label for="rarity">レアリティ (★1～★7):</label>
                 <select id="rarity" name="rarity" onchange="resetLevel()">
                     <option value="140" data-awakening-limit="18">N (★1 / Lv上限 140)</option>
-                    <option value="145" data-awakening-limit="19">HN (★2 / Lv上限 145)</option>
+                    <option value="145" data-awaketing-limit="19">HN (★2 / Lv上限 145)</option>
                     <option value="150" data-awakening-limit="20" selected>R (★3 / Lv上限 150)</option>
                     <option value="155" data-awakening-limit="21">HR (★4 / Lv上限 155)</option>
                     <option value="160" data-awakening-limit="22">SR (★5 / Lv上限 160)</option>
@@ -46,11 +46,11 @@
             <div class="input-group">
                 <label for="accessory">装着アクセサリ (Lv1ボーナス影響):</label>
                 <select id="accessory" name="accessory" onchange="calculateStatus()">
-                    <option value="none" data-atk="0" data-def="0" data-mag="0" selected>なし</option>
-                    <option value="diamond_necklace" data-atk="3" data-def="0" data-mag="0">ダイヤのネックレス (+3 ATK)</option>
-                    <option value="bracelet" data-atk="0" data-def="3" data-mag="0">ブレスレット (+3 DEF)</option>
-                    <option value="ring" data-atk="0" data-def="0" data-mag="3">リング (+3 MAG)</option>
-                    <option value="diamond_brooch" data-atk="1" data-def="1" data-mag="1">ダイアのブローチ (+1 ALL)</option>
+                    <option value="none" data-hp="0" data-atk="0" data-spd="0" selected>なし</option>
+                    <option value="hp_necklace" data-hp="3" data-atk="0" data-spd="0">ダイヤのネックレス (+3 HPに仮割当)</option>
+                    <option value="atk_bracelet" data-hp="0" data-atk="3" data-spd="0">ブレスレット (+3 ATKに仮割当)</option>
+                    <option value="spd_ring" data-hp="0" data-atk="0" data-spd="3">リング (+3 SPDに仮割当)</option>
+                    <option value="all_brooch" data-hp="1" data-atk="1" data-spd="1">ダイアのブローチ (+1 ALL)</option>
                 </select>
             </div>
 
@@ -59,16 +59,16 @@
             <h3>初期ステータス (Lv.1 時点)</h3>
 
             <div class="input-group">
-                <label for="base_atk">攻撃力 (Base ATK):</label>
+                <label for="base_hp">体力 (Base HP):</label>
+                <input type="number" id="base_hp" name="base_hp" value="300" min="1">
+            </div>
+            <div class="input-group">
+                <label for="base_atk">攻撃 (Base ATK):</label>
                 <input type="number" id="base_atk" name="base_atk" value="100" min="1">
             </div>
             <div class="input-group">
-                <label for="base_def">防御力 (Base DEF):</label>
-                <input type="number" id="base_def" name="base_def" value="50" min="1">
-            </div>
-            <div class="input-group">
-                <label for="base_mag">魔力 (Base MAG):</label>
-                <input type="number" id="base_mag" name="base_mag" value="120" min="1">
+                <label for="base_spd">速さ (Base SPD):</label>
+                <input type="number" id="base_spd" name="base_spd" value="20" min="1">
             </div>
             
             <button onclick="calculateStatus()">ステータス推測を実行</button>

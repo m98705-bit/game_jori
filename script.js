@@ -39,22 +39,22 @@ function calculateStatus(isSilent = false) {
     const accessorySelect = document.getElementById('accessory');
     const selectedAccessoryOption = accessorySelect.options[accessorySelect.selectedIndex];
 
-    // data属性から3つの補正値を取得
+    // data属性から3つの補正値を取得 (HP, ATK, SPD)
+    const accessoryHp = parseInt(selectedAccessoryOption.getAttribute('data-hp'), 10) || 0;
     const accessoryAtk = parseInt(selectedAccessoryOption.getAttribute('data-atk'), 10) || 0;
-    const accessoryDef = parseInt(selectedAccessoryOption.getAttribute('data-def'), 10) || 0;
-    const accessoryMag = parseInt(selectedAccessoryOption.getAttribute('data-mag'), 10) || 0;
+    const accessorySpd = parseInt(selectedAccessoryOption.getAttribute('data-spd'), 10) || 0;
 
     // 初期ステータスの取得（手入力値）
+    let baseHp = parseInt(document.getElementById('base_hp').value, 10) || 0;
     let baseAtk = parseInt(document.getElementById('base_atk').value, 10) || 0;
-    let baseDef = parseInt(document.getElementById('base_def').value, 10) || 0;
-    let baseMag = parseInt(document.getElementById('base_mag').value, 10) || 0;
+    let baseSpd = parseInt(document.getElementById('base_spd').value, 10) || 0;
     
     // ----------------------------------------------------------------
     // 2. アクセサリによる初期ステータスへの補正を加算
     // ----------------------------------------------------------------
+    baseHp += accessoryHp;
     baseAtk += accessoryAtk;
-    baseDef += accessoryDef;
-    baseMag += accessoryMag;
+    baseSpd += accessorySpd;
 
     // ----------------------------------------------------------------
     // 3. 覚醒回数の検証と補正 (上限: レア度+17回)
@@ -114,10 +114,10 @@ function calculateStatus(isSilent = false) {
     // ----------------------------------------------------------------
     
     // TODO: 実際のステータス推測ロジックを実装してください。
-    //       使用する変数: level, awakeningCount, baseAtk, baseDef, baseMag
+    //       使用する変数: level, awakeningCount, baseHp, baseAtk, baseSpd
     if (!isSilent) {
-        console.log(`[補正後の初期ステータス]: ATK=${baseAtk}, DEF=${baseDef}, MAG=${baseMag}`);
-        console.log(`(アクセサリ補正: ATK+${accessoryAtk}, DEF+${accessoryDef}, MAG+${accessoryMag})`);
+        console.log(`[補正後の初期ステータス]: HP=${baseHp}, ATK=${baseAtk}, SPD=${baseSpd}`);
+        console.log(`(アクセサリ補正: HP+${accessoryHp}, ATK+${accessoryAtk}, SPD+${accessorySpd})`);
     }
 }
 
