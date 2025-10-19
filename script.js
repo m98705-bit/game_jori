@@ -4,11 +4,8 @@
 function resetLevel() {
     const levelInput = document.getElementById('level');
     
-    // 覚醒するとレベルが1に戻るルールを適用
     if (levelInput) {
         levelInput.value = 1;
-        
-        // ユーザーに視覚的にレベル上限情報を更新させるために計算を軽く実行
         calculateStatus(true); 
     }
 }
@@ -25,24 +22,27 @@ function calculateStatus(isSilent = false) {
     const awakeningInput = document.getElementById('awakening').value; 
     const raritySelect = document.getElementById('rarity');
     
-    const selectedOption = raritySelect.options[raritySelect.selectedIndex];
+    const selectedRarityOption = raritySelect.options[raritySelect.selectedIndex];
 
     // レアリティごとの基本レベル上限と覚醒上限回数を取得
     const baseMaxLevel = parseInt(raritySelect.value, 10);
-    const maxAwakening = parseInt(selectedOption.getAttribute('data-awakening-limit'), 10); 
+    const maxAwakening = parseInt(selectedRarityOption.getAttribute('data-awakening-limit'), 10); 
     
     // 覚醒回数とレベルを数値に変換
     let awakeningCount = parseInt(awakeningInput, 10) || 0;
     let level = parseInt(levelInput, 10) || 1; 
 
-    // アクセサリの選択値を取得
-    const accessorySelect = document.getElementById('accessory');
+    // アクセサリの種類と宝石の補正値を取得
+    const accessorySelect = document.getElementById('accessory_type');
+    const gemSelect = document.getElementById('gem_level');
+    
     const selectedAccessoryOption = accessorySelect.options[accessorySelect.selectedIndex];
+    
+    // 補正されるステータスの種類を取得 (hp, atk, spd)
+    const boostType = selectedAccessoryOption.getAttribute('data-boost');
+    // 宝石による補正値を取得 (10, 20, 30, 40, 50)
+    const gemValue = parseInt(gemSelect.value, 10) || 0;
 
-    // data属性から3つの補正値を取得 (HP, ATK, SPD)
-    const accessoryHp = parseInt(selectedAccessoryOption.getAttribute('data-hp'), 10) || 0;
-    const accessoryAtk = parseInt(selectedAccessoryOption.getAttribute('data-atk'), 10) || 0;
-    const accessorySpd = parseInt(selectedAccessoryOption.getAttribute('data-spd'), 10) || 0;
 
     // 初期ステータスの取得（手入力値）
     let baseHp = parseInt(document.getElementById('base_hp').value, 10) || 0;
@@ -52,15 +52,27 @@ function calculateStatus(isSilent = false) {
     // ----------------------------------------------------------------
     // 2. アクセサリによる初期ステータスへの補正を加算
     // ----------------------------------------------------------------
-    baseHp += accessoryHp;
-    baseAtk += accessoryAtk;
-    baseSpd += accessorySpd;
+    // 補正タイプに応じて、対応するステータスに宝石の値を加算
+    let accessoryHp = 0;
+    let accessoryAtk = 0;
+    let accessorySpd = 0;
+    
+    if (boostType === 'hp') {
+        baseHp += gemValue;
+        accessoryHp = gemValue;
+    } else if (boostType === 'atk') {
+        baseAtk += gemValue;
+        accessoryAtk = gemValue;
+    } else if (boostType === 'spd') {
+        baseSpd += gemValue;
+        accessorySpd = gemValue;
+    }
 
     // ----------------------------------------------------------------
     // 3. 覚醒回数の検証と補正 (上限: レア度+17回)
     // ----------------------------------------------------------------
     if (awakeningCount > maxAwakening) {
-        awakeningCount = maxAwakening; // 上限値に補正
+        awakeningCount = maxAwakening; 
         document.getElementById('awakening').value = maxAwakening; 
         if (!isSilent) {
              document.getElementById('result-message').textContent = `注意: 覚醒回数が上限（${maxAwakening}回）を超えたため、${maxAwakening}回に補正しました。`;
@@ -81,16 +93,14 @@ function calculateStatus(isSilent = false) {
     let levelMessage = `現在のレベル上限: ${finalMaxLevel}`;
     let isLevelCorrected = false;
 
-    // レベルの下限 (1) をチェック
+    // レベルの検証
     if (level < 1) {
         level = 1;
         document.getElementById('level').value = 1;
         isLevelCorrected = true;
     }
-
-    // レベルの上限をチェック
     if (level > finalMaxLevel) {
-        level = finalMaxLevel; // 上限値に補正
+        level = finalMaxLevel; 
         document.getElementById('level').value = finalMaxLevel;
         isLevelCorrected = true;
         levelMessage += ` (⚠️ レベルが上限を超えていたため、${finalMaxLevel}に補正)`;
@@ -114,8 +124,11 @@ function calculateStatus(isSilent = false) {
     // ----------------------------------------------------------------
     
     // TODO: 実際のステータス推測ロジックを実装してください。
-    //       使用する変数: level, awakeningCount, baseHp, baseAtk, baseSpd
     if (!isSilent) {
+        const accessoryName = selectedAccessoryOption.textContent.split('(')[0].trim();
+        const gemName = gemSelect.options[gemSelect.selectedIndex].textContent.split('(')[0].trim();
+        
+        console.log(`[使用アクセサリ]: ${accessoryName} + ${gemName}`);
         console.log(`[補正後の初期ステータス]: HP=${baseHp}, ATK=${baseAtk}, SPD=${baseSpd}`);
         console.log(`(アクセサリ補正: HP+${accessoryHp}, ATK+${accessoryAtk}, SPD+${accessorySpd})`);
     }
@@ -123,5 +136,5 @@ function calculateStatus(isSilent = false) {
 
 // ページロード時にも一度レベル情報を表示 (初期値の確認用)
 document.addEventListener('DOMContentLoaded', () => {
-    calculateStatus(true); // 初期表示はメッセージなし (isSilent=true) で実行
+    calculateStatus(true); 
 });
