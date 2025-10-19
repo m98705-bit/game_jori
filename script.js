@@ -37,23 +37,29 @@ function calculateStatus(isSilent = false) {
     const levelInput = document.getElementById('level').value;
     const awakeningInput = document.getElementById('awakening').value; 
     const raritySelect = document.getElementById('rarity');
+    const growthSelect = document.getElementById('growth_type'); 
     
     const selectedRarityOption = raritySelect.options[raritySelect.selectedIndex];
+    const selectedGrowthOption = growthSelect.options[growthSelect.selectedIndex]; 
 
     // レアリティごとの基本レベル上限と覚醒上限回数を取得
     const baseMaxLevel = parseInt(raritySelect.value, 10);
     const maxAwakening = parseInt(selectedRarityOption.getAttribute('data-max-awakening'), 10); 
     
+    // 成長型ごとのレベルアップ時の成長値を取得
+    const growthHpPerLevel = parseInt(selectedGrowthOption.getAttribute('data-hp'), 10);
+    const growthAtkPerLevel = parseInt(selectedGrowthOption.getAttribute('data-atk'), 10);
+    const growthSpdPerLevel = parseInt(selectedGrowthOption.getAttribute('data-spd'), 10);
+    
     // 覚醒回数とレベルを数値に変換
     let awakeningCount = parseInt(awakeningInput, 10) || 0;
     let level = parseInt(levelInput, 10) || 1; 
 
-    // アクセサリの種類と補正値を取得 (GemLevelのドロップダウンを削除)
+    // アクセサリの種類と補正値を取得
     const accessorySelect = document.getElementById('accessory_type');
     const selectedAccessoryOption = accessorySelect.options[accessorySelect.selectedIndex];
     
     const boostType = selectedAccessoryOption.getAttribute('data-boost');
-    // data-gem-valueから直接補正値を取得
     const gemValue = parseInt(selectedAccessoryOption.getAttribute('data-gem-value'), 10) || 0; 
 
 
@@ -65,7 +71,6 @@ function calculateStatus(isSilent = false) {
     // ----------------------------------------------------------------
     // 2. アクセサリによる純粋なLv.1補正値の計算
     // ----------------------------------------------------------------
-    // ★★★ ロジック変更なし (gemValueの取得元のみ変更) ★★★
     let accessoryHp = 0;
     let accessoryAtk = 0;
     let accessorySpd = 0;
@@ -117,8 +122,7 @@ function calculateStatus(isSilent = false) {
         document.getElementById('awakening').value = 0;
     }
 
-    // 最終レベル上限の計算ロジック: 
-    // 最終上限 = 初期Lv.上限 + (覚醒回数 * 5)
+    // 最終レベル上限の計算ロジック: 最終上限 = 初期Lv.上限 + (覚醒回数 * 5)
     const bonusMaxLevel = awakeningCount * 5; 
     const finalMaxLevel = baseMaxLevel + bonusMaxLevel; 
 
@@ -138,22 +142,22 @@ function calculateStatus(isSilent = false) {
     }
     
     // ----------------------------------------------------------------
-    // 5. ステータス推測計算の実行 (Lv.1からの線形成長推測)
+    // 5. ステータス推測計算の実行 (成長型による加算)
     // ----------------------------------------------------------------
     
-    // 暫定的な推測ロジック：成長値 = Current Lv.1ステータス / 10
-    const growthHp = currentLv1Hp / 10;
-    const growthAtk = currentLv1Atk / 10;
-    const growthSpd = currentLv1Spd / 10;
+    const levelDifference = level - 1; // Lv.1からのレベル上昇回数
     
-    const levelDifference = level - 1;
-    
-    const finalHp = Math.round(currentLv1Hp + (growthHp * levelDifference));
-    const finalAtk = Math.round(currentLv1Atk + (growthAtk * levelDifference));
-    const finalSpd = Math.round(currentLv1Spd + (growthSpd * levelDifference));
+    // 成長型による加算計算
+    const totalGrowthHp = growthHpPerLevel * levelDifference;
+    const totalGrowthAtk = growthAtkPerLevel * levelDifference;
+    const totalGrowthSpd = growthSpdPerLevel * levelDifference;
+
+    const finalHp = currentLv1Hp + totalGrowthHp;
+    const finalAtk = currentLv1Atk + totalGrowthAtk;
+    const finalSpd = currentLv1Spd + totalGrowthSpd;
     
     // ----------------------------------------------------------------
-    // 6. 結果の表示 (UI改善)
+    // 6. 結果の表示 (UI更新)
     // ----------------------------------------------------------------
     
     document.getElementById('current-level-display').textContent = `Lv. ${level}`;
@@ -167,7 +171,7 @@ function calculateStatus(isSilent = false) {
         if (isLevelCorrected) {
              document.getElementById('result-message').textContent = '⚠️ 入力レベルが上限を超えていたため、最大レベルに補正しました。';
         } else {
-             document.getElementById('result-message').textContent = '覚醒ボーナスとアクセサリ補正を適用し、ステータスを推測しました。';
+             document.getElementById('result-message').textContent = '覚醒ボーナス、アクセサリ、成長型を適用し、ステータスを推測しました。';
         }
     }
     
@@ -186,6 +190,12 @@ function calculateStatus(isSilent = false) {
   覚醒回数: ${awakeningCount} / 上限: ${maxAwakening}
   最終Lv上限: ${finalMaxLevel}
 
+[成長型 (LvUP毎)]
+  ${selectedGrowthOption.textContent}
+  HP増加: ${growthHpPerLevel} × ${levelDifference} = +${totalGrowthHp}
+  ATK増加: ${growthAtkPerLevel} × ${levelDifference} = +${totalGrowthAtk}
+  SPD増加: ${growthSpdPerLevel} × ${levelDifference} = +${totalGrowthSpd}
+
 [アクセサリ補正]
   種類: ${selectedAccessoryOption.textContent}
   純粋な補正値: HP+${accessoryHp}, ATK+${accessoryAtk}, SPD+${accessorySpd}
@@ -195,19 +205,20 @@ function calculateStatus(isSilent = false) {
   累積覚醒ボーナス: HP+${totalBonusHp}, ATK+${totalBonusAtk}, SPD+${totalBonusSpd}
   計算後Lv.1 (補正済): HP=${currentLv1Hp}, ATK=${currentLv1Atk}, SPD=${currentLv1Spd}
 
-[推測成長]
-  成長値 (Lv1/10): HP=${growthHp.toFixed(2)}, ATK=${growthAtk.toFixed(2)}, SPD=${growthSpd.toFixed(2)}
-  推測結果 (最終): HP=${finalHp}, ATK=${finalAtk}, SPD=${finalSpd}`;
+[推測結果 (最終)]
+  HP: ${currentLv1Hp} + ${totalGrowthHp} = ${finalHp}
+  ATK: ${currentLv1Atk} + ${totalGrowthAtk} = ${finalAtk}
+  SPD: ${currentLv1Spd} + ${totalGrowthSpd} = ${finalSpd}`;
     
     document.getElementById('debug-output').textContent = debugOutput;
 }
 
 // ページロード時にも一度レベル情報を表示 (初期値の確認用)
 document.addEventListener('DOMContentLoaded', () => {
-    // レベル初期値を1に設定 (UIの初期表示のため)
+    // レベル初期値を1に設定
     document.getElementById('level').value = 1;
+    // 初回実行 (サイレントモード)
     calculateStatus(true); 
-    
-    // 初期状態でデバッグ情報を非表示にする
+    // デバッグ情報を初期状態で非表示にする
     document.getElementById('debug-output').style.display = 'none';
 });

@@ -18,7 +18,7 @@
             <h2>カード情報入力</h2>
 
             <h3>1. カード基本情報</h3>
-            <div class="input-row">
+            <div class="input-row compact-row">
                 <div class="input-group">
                     <label for="rarity">レアリティ:</label>
                     <select id="rarity" name="rarity" onchange="resetLevel()">
@@ -42,6 +42,19 @@
                     <input type="number" id="level" name="level" value="1" min="1">
                 </div>
             </div>
+            
+            <div class="input-group">
+                <label for="growth_type">成長型 (LvUP時ステータス):</label>
+                <select id="growth_type" name="growth_type" onchange="calculateStatus()">
+                    <option value="HH" data-hp="3" data-atk="1" data-spd="1" selected>HH型 (HP+3, ATK+1, SPD+1)</option>
+                    <option value="AA" data-hp="1" data-atk="3" data-spd="1">AA型 (HP+1, ATK+3, SPD+1)</option>
+                    <option value="SS" data-hp="1" data-atk="1" data-spd="3">SS型 (HP+1, ATK+1, SPD+3)</option>
+                    <option value="HA" data-hp="2" data-atk="2" data-spd="1">HA型 (HP+2, ATK+2, SPD+1)</option>
+                    <option value="HS" data-hp="2" data-atk="1" data-spd="2">HS型 (HP+2, ATK+1, SPD+2)</option>
+                    <option value="AS" data-hp="1" data-atk="2" data-spd="2">AS型 (HP+1, ATK+2, SPD+2)</option>
+                </select>
+            </div>
+            
             <hr>
 
             <h3>2. アクセサリ選択 (Lv.1ボーナス計算用)</h3>
