@@ -91,3 +91,99 @@ hr { /* 区切り線 */
     font-weight: bold;
     color: #333; /* 文字色を黒に戻すなど */
 }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+header {
+    background-color: #0056b3;
+    color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+main {
+    /* ★★★ ここを修正・確認してください ★★★ */
+    max-width: 800px; /* コンテンツの最大幅を800pxに制限 */
+    margin: 0 auto;  /* 左右の余白を自動にし、コンテンツを中央に配置 */
+    /* ★★★ ここまで ★★★ */
+    padding: 20px;
+}
+
+.input-section, .result-section {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+h2, h3 { 
+    color: #0056b3;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+    margin-top: 20px;
+}
+h2 {
+    margin-top: 0;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="number"], select {
+    width: calc(100% - 22px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+#level-info {
+    font-weight: bold;
+    color: #d9534f;
+    margin-top: 15px;
+}
+
+#final-hp, #final-atk, #final-spd {
+    font-size: 1.1em;
+    padding: 5px 0;
+    font-weight: bold;
+    color: #333; 
+}
+
+hr { 
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 25px 0;
+}
