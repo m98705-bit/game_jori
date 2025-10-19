@@ -38,9 +38,9 @@ function calculateStatus(isSilent = false) {
     
     const selectedAccessoryOption = accessorySelect.options[accessorySelect.selectedIndex];
     
-    // 補正されるステータスの種類を取得 (hp, atk, spd)
+    // 補正されるステータスの種類を取得 (hp, atk, spd, hp_spd, hp_atk, atk_spd)
     const boostType = selectedAccessoryOption.getAttribute('data-boost');
-    // 宝石による補正値を取得 (10, 20, 30, 40, 50)
+    // 宝石による補正値を取得 (10, 20, 30, 40, 50など)
     const gemValue = parseInt(gemSelect.value, 10) || 0;
 
 
@@ -50,20 +50,21 @@ function calculateStatus(isSilent = false) {
     let baseSpd = parseInt(document.getElementById('base_spd').value, 10) || 0;
     
     // ----------------------------------------------------------------
-    // 2. アクセサリによる初期ステータスへの補正を加算
+    // 2. アクセサリによる初期ステータスへの補正を加算 (ロジックを全面修正)
     // ----------------------------------------------------------------
-    // 補正タイプに応じて、対応するステータスに宝石の値を加算
     let accessoryHp = 0;
     let accessoryAtk = 0;
     let accessorySpd = 0;
     
-    if (boostType === 'hp') {
+    if (boostType.includes('hp')) {
         baseHp += gemValue;
         accessoryHp = gemValue;
-    } else if (boostType === 'atk') {
+    }
+    if (boostType.includes('atk')) {
         baseAtk += gemValue;
         accessoryAtk = gemValue;
-    } else if (boostType === 'spd') {
+    }
+    if (boostType.includes('spd')) {
         baseSpd += gemValue;
         accessorySpd = gemValue;
     }
